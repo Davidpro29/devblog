@@ -6,9 +6,14 @@ O objetivo dess app é para aprimorar os conhecimentos com requisições http, a
 - Requisições http, para consumir o conteúdos externos, nesse caso no Strapi, com os conteúdos para o blog.
 - Com categorias e se quiser da pra favoritar as categorias pra deixar gravado no celular.
 
-Por enquanto...
+Feito a parte de detalhes como a capa, links, a descrição.
 
-Ainda há muitos recursos a serem inseridos, como um search pra procurar os postos de interesse.
-Detalhes dos posts tambem com links pra navegar.
+Muita coisa nova como:
+- SafeAreaView para que em celulares ios não atrapalhe o header
+- ScrollView para usar o scroll no app
+- Share para compartilhar as publicações
+- Modal para exibir os conteúdos clicando nos links
+
+Ainda em desenvolvimento na parte de procura (search)
 
 Usando ReactNative para aprimorar com NodeJs e Strapi para a API.

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, FlatList} from 'react-native';
 import CategoryItem from '../../components/CategoryItem';
+import * as Animatable from 'react-native-animatable';
 
 import {useNavigation} from '@react-navigation/native'
 import {Feather} from '@expo/vector-icons'
@@ -8,14 +9,20 @@ import {Feather} from '@expo/vector-icons'
 import api from '../../services/api';
 import { getFavorite, setFavorite } from '../../services/favorite';
 import FavoritePost from '../../components/FavoritePost';
+import PostItem from    '../../components/PostItem';
 
 export default function Home(){
     const navigation = useNavigation();
-    const [categories, setCategories] = useState([])
-    const [favCategory, setFavCategory] = useState([])
+    const [categories, setCategories] = useState([]);
+    const [favCategory, setFavCategory] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         async function loadData(){
+
+            await getListPost();
+
             const category = await api.get("api/categories?populate=icon")
             setCategories(category.data.data)
         }
@@ -33,6 +40,15 @@ export default function Home(){
         favorite();
     }, [])
 
+    async function getListPost(){
+        setLoading(true);
+
+        const response = await api.get("api/posts?populate=cover&sort=createdAt:desc")
+        setPosts(response.data.data);
+
+        setLoading(false);
+    }
+
     async function handleFavorite(id){
         const response = await setFavorite(id)
         
@@ -43,7 +59,7 @@ export default function Home(){
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.name}>DevBlog</Text>
+                <Animatable.Text style={styles.name} animation='fadeInLeft'>DevBlog</Animatable.Text>
 
                 <TouchableOpacity onPress={ ()=> navigation.navigate("Search")}>
                     <Feather name='search' size={25} color='#fff' />
@@ -84,6 +100,16 @@ export default function Home(){
                     styles.title,
                     {marginTop: favCategory.length > 0 ? 14 : 46}
                 ]}>Conteúdos</Text>
+
+                <FlatList 
+                    style={{flex: 1, paddingHorizontal: 18}}
+                    showsVerticalScrollIndicator={false}
+                    data={posts}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({item}) => <PostItem data={item} />}
+                    refreshing={loading}
+                    onRefresh={ () => getListPost()}
+                />
 
             </View>
 
